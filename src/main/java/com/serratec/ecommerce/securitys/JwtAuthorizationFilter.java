@@ -3,10 +3,10 @@ package com.serratec.ecommerce.securitys;
 import java.io.IOException;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import jakarta.servlet.FilterChain;
@@ -39,7 +39,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         // 🚫 Ignorar rotas públicas
         if (path.startsWith("/auth/") ||
             path.startsWith("/public/") ||
-            (path.startsWith("/categorias") && method.equalsIgnoreCase("GET"))||
+            (path.startsWith("/categorias") && method.equalsIgnoreCase("GET")) ||
+            (path.startsWith("/produtos") && method.equalsIgnoreCase("GET")) ||
+            (path.startsWith("/pedidos") && (
+                method.equalsIgnoreCase("GET") ||
+                method.equalsIgnoreCase("POST") ||
+                method.equalsIgnoreCase("PUT")
+            )) ||
             path.startsWith("/swagger-ui") ||
             path.startsWith("/v3/api-docs") ||
             path.startsWith("/swagger-resources") ||
@@ -49,7 +55,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        // 🔒 Para demais rotas, validar token JWT
+        // 🔒 Validação do token JWT
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
@@ -57,7 +63,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             try {
                 String username = jwtUtil.extractUsername(token);
-                System.out.println(" Token recebido para usuário: " + username);
+                System.out.println("🔑 Token recebido para usuário: " + username);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails user = userDetailsService.loadUserByUsername(username);
@@ -66,21 +72,21 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         UsernamePasswordAuthenticationToken auth =
                                 new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(auth);
-                        System.out.println(" Autenticação via JWT concluída para: " + username);
+                        System.out.println("✅ Autenticação via JWT concluída para: " + username);
                     } else {
-                        System.out.println(" Token inválido para usuário: " + username);
+                        System.out.println("⚠️ Token inválido para usuário: " + username);
                     }
                 }
 
             } catch (Exception e) {
-                System.out.println(" Erro ao validar token: " + e.getMessage());
+                System.out.println("❌ Erro ao validar token: " + e.getMessage());
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\": \"Token inválido ou expirado\"}");
                 return;
             }
         } else {
-            System.out.println(" Nenhum header Authorization encontrado");
+            System.out.println("ℹ️ Nenhum header Authorization encontrado");
         }
 
         chain.doFilter(request, response);
