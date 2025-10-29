@@ -53,7 +53,6 @@ public class PedidoService {
             pedido.adicionarItem(
                     produto,
                     itemDto.getQuantidade(),
-                    itemDto.getValorVenda(),
                     itemDto.getDesconto() != null ? itemDto.getDesconto() : BigDecimal.ZERO
             );
         }
@@ -101,7 +100,6 @@ public class PedidoService {
                 pedido.adicionarItem(
                         produto,
                         itemDto.getQuantidade(),
-                        itemDto.getValorVenda(),
                         itemDto.getDesconto() != null ? itemDto.getDesconto() : BigDecimal.ZERO
                 );
             }
@@ -151,10 +149,8 @@ public class PedidoService {
         dto.setProdutoId(item.getProduto().getId());
         dto.setNomeProduto(item.getProduto().getNome());
         dto.setQuantidade(item.getQuantidade());
-        dto.setValorVenda(item.getValorVenda());
         dto.setDesconto(item.getDesconto());
         dto.setSubtotal(item.getSubtotal());
         return dto;
     }
 }
-

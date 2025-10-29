@@ -27,7 +27,7 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    //  Criar novo usuário
+    // 🔹 Criar novo usuário
     @Operation(summary = "Cria um novo usuário", description = "Endpoint para cadastrar um novo usuário no sistema. Requer autenticação ADMIN.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuário criado com sucesso"),
@@ -43,7 +43,7 @@ public class UsuarioController {
         return ResponseEntity.ok(novo);
     }
 
-    //  Listar todos
+    // 🔹 Listar todos
     @Operation(summary = "Lista todos os usuários", description = "Retorna a lista completa de usuários cadastrados. Apenas ADMIN pode acessar.")
     @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
     @GetMapping
@@ -51,7 +51,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.listar());
     }
 
-    //  Buscar por ID
+    // 🔹 Buscar por ID
     @Operation(summary = "Busca usuário por ID", description = "Retorna um usuário específico a partir do seu ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
@@ -65,7 +65,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.buscarPorId(id));
     }
 
-    //  Atualizar
+    // 🔹 Atualizar
     @Operation(summary = "Atualiza um usuário existente", description = "Permite atualizar informações de um usuário existente. Requer autenticação ADMIN.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),
@@ -80,7 +80,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.atualizar(id, dto));
     }
 
-    //  Deletar
+    // 🔹 Deletar
     @Operation(summary = "Remove um usuário", description = "Exclui permanentemente um usuário pelo ID. Requer autenticação ADMIN.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Usuário removido com sucesso"),

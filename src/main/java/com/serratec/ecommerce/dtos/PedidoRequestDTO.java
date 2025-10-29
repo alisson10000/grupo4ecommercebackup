@@ -12,7 +12,7 @@ public class PedidoRequestDTO {
 
     private StatusPedido status;
 
-    @NotNull(message = "Itens do pedido são obrigatórios")
+    @NotNull(message = "É necessario a inclusão de um item")
     private List<ItemPedidoDTO> itens;
 
     public PedidoRequestDTO() {

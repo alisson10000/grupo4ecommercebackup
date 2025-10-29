@@ -57,6 +57,13 @@ public class ConfigSeguranca {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/categorias/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/produtos/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/pedidos/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/pedidos/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/pedidos/**").permitAll()
+                
+                
+                
                 
              // 🔓 Rotas do Swagger (precisam estar liberadas)
                 .requestMatchers(
@@ -76,6 +83,36 @@ public class ConfigSeguranca {
                 .requestMatchers(HttpMethod.PUT, "/categorias/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/categorias/**").hasRole("ADMIN")
                 
+                //Rotas protegidas produtos
+                .requestMatchers(HttpMethod.POST, "/produtos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/produtos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/produtos/**").hasRole("ADMIN")
+                
+                //Rotas protegidas clientes
+                .requestMatchers(HttpMethod.GET, "/clientes/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/clientes/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/clientes/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/clientes/**").hasRole("ADMIN")
+                
+           
+                
+              //Rotas protegidas relatorios
+                .requestMatchers(HttpMethod.GET, "/relatorios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/relatorios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/relatorios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/relatorios/**").hasRole("ADMIN")
+                
+                
+                
+                
+                
+                //Rotas protegidas pedidos
+                
+                .requestMatchers(HttpMethod.DELETE, "/pedidos/**").hasRole("ADMIN")
+                
+                //Rotas protegidas cupom
+                
+                .requestMatchers(HttpMethod.DELETE, "/validar-cupom/**").hasRole("ADMIN")
                 
                 .anyRequest().authenticated()
             )
