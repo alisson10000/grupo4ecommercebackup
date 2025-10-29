@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.serratec.ecommerce.dtos.EnderecoDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -66,13 +68,14 @@ public class Cliente {
 	@Column(nullable = true, length = 60)
 	private String complemento;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "endereco_id", nullable = false)
 	@Schema(description = "Endereço associado ao cliente, contendo o CEP e demais informações.", implementation = EnderecoDTO.class)
 	private Endereco endereco;
 
 	@OneToMany(mappedBy = "cliente")
 	@Schema(description = "Lista de pedidos vinculados ao cliente.")
+	@JsonIgnore
 	private List<Pedido> pedidos;
 
 	public Cliente(Long id, String nome, String email, String cpf, String telefone, String numero, String complemento,

@@ -1,25 +1,32 @@
 package com.serratec.ecommerce.controllers;
 
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.serratec.ecommerce.dtos.ProdutoDTO;
 import com.serratec.ecommerce.dtos.ProdutoInserirDTO;
 import com.serratec.ecommerce.services.ProdutoService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
@@ -50,12 +57,12 @@ public class ProdutoController {
     // INSERIR
     @PostMapping
     @Operation(
-        summary = "Cadastra um novo produto",
-        responses = {
-            @ApiResponse(responseCode = "201", description = "Produto criado",
-                content = @Content(schema = @Schema(implementation = ProdutoDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Validação/Regra de negócio violada")
-        }
+            summary = "Cadastra um novo produto",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Produto criado",
+                            content = @Content(schema = @Schema(implementation = ProdutoDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Validação/Regra de negócio violada")
+            }
     )
     public ResponseEntity<ProdutoDTO> inserir(
             @Valid @RequestBody ProdutoInserirDTO dto,
@@ -69,12 +76,12 @@ public class ProdutoController {
     // ATUALIZAR (PUT)
     @PutMapping("/{id}")
     @Operation(
-        summary = "Atualiza um produto existente (substituição dos campos enviados)",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Produto atualizado",
-                content = @Content(schema = @Schema(implementation = ProdutoDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Produto não encontrado")
-        }
+            summary = "Atualiza um produto existente (substituição dos campos enviados)",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Produto atualizado",
+                            content = @Content(schema = @Schema(implementation = ProdutoDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+            }
     )
     public ResponseEntity<ProdutoDTO> atualizar(
             @PathVariable Long id,

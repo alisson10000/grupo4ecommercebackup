@@ -1,42 +1,50 @@
 package com.serratec.ecommerce.entitys;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Table(name = "itens_pedido")
+@Schema(description = "Entidade que representa um item de um pedido no sistema.")
 public class ItemPedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identificador único do item do pedido.", example = "1")
     private Long id;
 
     @NotNull(message = "Pedido é obrigatório")
-    @ManyToOne
-    @JoinColumn(name = "id_pedido",nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_pedido")
+    @Schema(description = "Pedido ao qual este item pertence.")
     private Pedido pedido;
 
     @NotNull(message = "Produto é obrigatório")
     @ManyToOne
     @JoinColumn(name = "id_produto")
+    @Schema(description = "Produto que compõe este item do pedido.")
     private Produto produto;
 
     @NotNull(message = "Quantidade é obrigatória")
     @Min(value = 1, message = "Quantidade deve ser maior que zero")
+    @Schema(description = "Quantidade do produto no pedido.", example = "2")
     private Integer quantidade;
 
     @NotNull(message = "Valor de venda é obrigatório")
     @DecimalMin(value = "0.01", message = "Valor deve ser maior que zero")
+    @Schema(description = "Valor unitário de venda do produto.", example = "99.90")
     private BigDecimal valorVenda;
 
     @DecimalMin(value = "0.00", message = "Desconto não pode ser negativo")
+    @Schema(description = "Valor do desconto aplicado ao item.", example = "10.00")
     private BigDecimal desconto = BigDecimal.ZERO;
 
     public ItemPedido() {
@@ -100,8 +108,8 @@ public class ItemPedido {
     }
 
     public BigDecimal getSubtotal() {
-        BigDecimal subtotal = valorVenda.multiply(new BigDecimal(quantidade));
-        return subtotal.subtract(desconto);
+        BigDecimal subtotal = valorVenda.multiply(BigDecimal.valueOf(quantidade));
+        return subtotal.subtract(desconto != null ? desconto : BigDecimal.ZERO);
     }
 
     @Override

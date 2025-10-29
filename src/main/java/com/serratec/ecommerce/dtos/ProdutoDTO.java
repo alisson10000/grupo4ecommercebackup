@@ -1,6 +1,7 @@
 package com.serratec.ecommerce.dtos;
 
 import com.serratec.ecommerce.entitys.Produto;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "DTO para exibição de produtos com categoria resumida")
@@ -45,8 +46,8 @@ public class ProdutoDTO {
 
         if (produto.getCategoria() != null) {
             this.categoria = new CategoriaResumoDTO(
-                produto.getCategoria().getId(),
-                produto.getCategoria().getNome()
+                    produto.getCategoria().getId(),
+                    produto.getCategoria().getNome()
             );
         }
     }
@@ -68,5 +69,6 @@ public class ProdutoDTO {
     public void setQuantidadeEstoque(Integer quantidadeEstoque) { this.quantidadeEstoque = quantidadeEstoque; }
 
     public CategoriaResumoDTO getCategoria() { return categoria; }
+
     public void setCategoria(CategoriaResumoDTO categoria) { this.categoria = categoria; }
 }

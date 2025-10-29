@@ -8,7 +8,6 @@ public class ItemPedidoResponseDTO {
     private Long produtoId;
     private String nomeProduto;
     private Integer quantidade;
-    private BigDecimal valorVenda;
     private BigDecimal desconto;
     private BigDecimal subtotal;
 
@@ -45,14 +44,6 @@ public class ItemPedidoResponseDTO {
 
     public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;
-    }
-
-    public BigDecimal getValorVenda() {
-        return valorVenda;
-    }
-
-    public void setValorVenda(BigDecimal valorVenda) {
-        this.valorVenda = valorVenda;
     }
 
     public BigDecimal getDesconto() {

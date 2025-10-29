@@ -15,7 +15,7 @@ public class UsuarioDTO {
 
     public UsuarioDTO() {}
 
-    //  Construtor que recebe a entidade diretamente
+    // 🔹 Construtor que recebe a entidade diretamente
     public UsuarioDTO(Usuario usuario) {
         this.id = usuario.getId();
         this.nome = usuario.getNome();
@@ -29,7 +29,7 @@ public class UsuarioDTO {
         }
     }
 
-    //  Construtor completo
+    // 🔹 Construtor completo
     public UsuarioDTO(Long id, String nome, String email, Perfil perfil,
                       String numero, String complemento, EnderecoDTO endereco) {
         this.id = id;
@@ -41,7 +41,7 @@ public class UsuarioDTO {
         this.endereco = endereco;
     }
 
-    //  Getters e Setters
+    // 🔹 Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

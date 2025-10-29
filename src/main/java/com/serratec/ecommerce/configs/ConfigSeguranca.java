@@ -94,11 +94,25 @@ public class ConfigSeguranca {
                 .requestMatchers(HttpMethod.PUT, "/clientes/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/clientes/**").hasRole("ADMIN")
                 
+           
+                
+              //Rotas protegidas relatorios
+                .requestMatchers(HttpMethod.GET, "/relatorios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/relatorios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/relatorios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/relatorios/**").hasRole("ADMIN")
+                
+                
+                
+                
                 
                 //Rotas protegidas pedidos
                 
                 .requestMatchers(HttpMethod.DELETE, "/pedidos/**").hasRole("ADMIN")
                 
+                //Rotas protegidas cupom
+                
+                .requestMatchers(HttpMethod.DELETE, "/validar-cupom/**").hasRole("ADMIN")
                 
                 .anyRequest().authenticated()
             )
