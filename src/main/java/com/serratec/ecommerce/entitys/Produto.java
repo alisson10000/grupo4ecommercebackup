@@ -38,6 +38,10 @@ public class Produto {
     @Column(name = "quantidade_estoque", nullable = false)
     @Schema(description = "Quantidade disponível em estoque", example = "25")
     private Integer quantidadeEstoque;
+   
+    
+    @Column(name = "foto")
+    private String foto;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
@@ -57,11 +61,20 @@ public class Produto {
     }
 
     // Getters e Setters
+    
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
+	public void setId(Long id) {
         this.id = id;
     }
 

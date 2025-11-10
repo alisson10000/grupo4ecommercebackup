@@ -2,6 +2,8 @@ package com.serratec.ecommerce.securitys;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -18,9 +20,18 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    //  Gera o token JWT
+    // 🔹 Compatível com ambos: só e-mail ou e-mail+nome
     public String generateToken(String username) {
+        return generateToken(username, username);
+    }
+
+    // 🔹 Gera token JWT com e-mail e nome
+    public String generateToken(String username, String nomeUsuario) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("name", nomeUsuario);
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
@@ -28,7 +39,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    //  Extrai todas as claims (informações do token)
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -37,19 +47,21 @@ public class JwtUtil {
                 .getBody();
     }
 
-    //  Verifica se o token ainda é válido
-    public boolean isTokenValid(String token, String username) {
-        final String tokenUsername = extractUsername(token);
-        return username.equals(tokenUsername) && !isTokenExpired(token);
+    public String extractUsername(String token) {
+        return extractClaims(token).getSubject();
     }
 
-    //  Verifica se o token expirou
+    public String extractName(String token) {
+        Object name = extractClaims(token).get("name");
+        return name != null ? name.toString() : null;
+    }
+
     private boolean isTokenExpired(String token) {
         return extractClaims(token).getExpiration().before(new Date());
     }
 
-    //  Extrai o username do token
-    public String extractUsername(String token) {
-        return extractClaims(token).getSubject();
+    public boolean isTokenValid(String token, String username) {
+        final String tokenUsername = extractUsername(token);
+        return username.equals(tokenUsername) && !isTokenExpired(token);
     }
 }

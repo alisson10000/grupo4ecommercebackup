@@ -68,7 +68,7 @@ public class Cliente {
 	@Column(nullable = true, length = 60)
 	private String complemento;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "endereco_id", nullable = false)
 	@Schema(description = "Endereço associado ao cliente, contendo o CEP e demais informações.", implementation = EnderecoDTO.class)
 	private Endereco endereco;

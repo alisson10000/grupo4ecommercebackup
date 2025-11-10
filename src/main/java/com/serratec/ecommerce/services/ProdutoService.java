@@ -46,7 +46,6 @@ public class ProdutoService {
     // INSERIR
     @Transactional
     public ProdutoDTO inserir(ProdutoInserirDTO dto) {
-        // Verifica duplicidade por nome (case-insensitive, com match exato dentro do resultado do "containing")
         boolean nomeJaExiste = produtoRepository.findByNomeContainingIgnoreCase(dto.getNome())
                 .stream()
                 .anyMatch(p -> p.getNome().equalsIgnoreCase(dto.getNome()));
@@ -75,7 +74,6 @@ public class ProdutoService {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado (id=" + id + ")"));
 
-        // Se nome vier e mudou, valida duplicidade (excluindo o próprio id)
         if (dto.getNome() != null && !dto.getNome().equalsIgnoreCase(produto.getNome())) {
             boolean nomeJaUsadoPorOutro = produtoRepository.findByNomeContainingIgnoreCase(dto.getNome())
                     .stream()
@@ -100,6 +98,16 @@ public class ProdutoService {
         return new ProdutoDTO(produto);
     }
 
+    // ATUALIZAR FOTO (usado no upload)
+    @Transactional
+    public ProdutoDTO atualizarFoto(Long id, String fotoPath) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado (id=" + id + ")"));
+        produto.setFoto(fotoPath);
+        produto = produtoRepository.save(produto);
+        return new ProdutoDTO(produto);
+    }
+
     // DELETAR
     @Transactional
     public void deletar(Long id) {
@@ -108,7 +116,7 @@ public class ProdutoService {
         produtoRepository.delete(produto);
     }
 
-    // AJUSTAR ESTOQUE (ex.: +5 ou -3)
+    // AJUSTAR ESTOQUE
     @Transactional
     public ProdutoDTO ajustarEstoque(Long id, Integer ajuste) {
         if (ajuste == null) {
@@ -128,7 +136,7 @@ public class ProdutoService {
         return new ProdutoDTO(produto);
     }
 
-    // CONSULTAS DE APOIO (opcional, já que você tem os métodos no repository)
+    // CONSULTAS DE APOIO
     @Transactional(readOnly = true)
     public List<ProdutoDTO> buscarPorNome(String termo) {
         return produtoRepository.findByNomeContainingIgnoreCase(termo)
@@ -159,19 +167,5 @@ public class ProdutoService {
                 .stream()
                 .map(ProdutoDTO::new)
                 .toList();
-    }
-
-    // Conversor manual (caso prefira usar em algum ponto)
-    private ProdutoDTO toDTO(Produto p) {
-        ProdutoDTO dto = new ProdutoDTO();
-        dto.setId(p.getId());
-        dto.setNome(p.getNome());
-        dto.setDescricao(p.getDescricao());
-        dto.setPreco(p.getPreco());
-        dto.setQuantidadeEstoque(p.getQuantidadeEstoque());
-        if (p.getCategoria() != null) {
-            dto.setCategoria(new CategoriaResumoDTO(p.getCategoria().getId(), p.getCategoria().getNome()));
-        }
-        return dto;
     }
 }

@@ -97,7 +97,7 @@ Antes de começar, você precisará ter instalado:
 ### Clonar o Repositório
 
 ```bash
-git clone https://github.com/SeuUsuario/TrabalhoFinalAPI-Grupo4.git
+git clone https://github.com/pedrosgleite/TrabalhoFinalAPI-Grupo4
 cd TrabalhoFinalAPI-Grupo4
 ```
 
@@ -130,8 +130,8 @@ mvn spring-boot:run
 
 ou pela IDE:
 
-> `Run → TrabalhoFinalApiGrupo4Application.java`
-
+> `Run → TrabalhoFinalApiGrupo4Application.java`  
+* Para que o banco de dados seja completamente populado com os dados iniciais, é necessário executar a aplicação **duas vezes**.  
 ---
 
 ## Autenticação JWT

@@ -1,7 +1,6 @@
 package com.serratec.ecommerce.dtos;
 
 import com.serratec.ecommerce.entitys.Produto;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "DTO para exibição de produtos com categoria resumida")
@@ -25,15 +24,20 @@ public class ProdutoDTO {
     @Schema(description = "Categoria resumida do produto")
     private CategoriaResumoDTO categoria;
 
+    @Schema(description = "URL pública da foto do produto", example = "http://localhost:8080/uploads/produtos/1.jpg")
+    private String foto;
+
     public ProdutoDTO() {}
 
-    public ProdutoDTO(Long id, String nome, String descricao, Double preco, Integer quantidadeEstoque, CategoriaResumoDTO categoria) {
+    public ProdutoDTO(Long id, String nome, String descricao, Double preco, Integer quantidadeEstoque,
+                      CategoriaResumoDTO categoria, String foto) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.quantidadeEstoque = quantidadeEstoque;
         this.categoria = categoria;
+        this.foto = foto;
     }
 
     // Construtor que converte da entidade
@@ -49,6 +53,14 @@ public class ProdutoDTO {
                     produto.getCategoria().getId(),
                     produto.getCategoria().getNome()
             );
+        }
+
+        // Gera a URL da imagem dinamicamente
+        if (produto.getFoto() != null && !produto.getFoto().isEmpty()) {
+            this.foto = "http://localhost:8080" + produto.getFoto(); // URL já formatada
+        } else if (produto.getId() != null) {
+            // fallback padrão
+            this.foto = "http://localhost:8080/uploads/produtos/" + produto.getId() + ".jpg";
         }
     }
 
@@ -69,6 +81,8 @@ public class ProdutoDTO {
     public void setQuantidadeEstoque(Integer quantidadeEstoque) { this.quantidadeEstoque = quantidadeEstoque; }
 
     public CategoriaResumoDTO getCategoria() { return categoria; }
-
     public void setCategoria(CategoriaResumoDTO categoria) { this.categoria = categoria; }
+
+    public String getFoto() { return foto; }
+    public void setFoto(String foto) { this.foto = foto; }
 }

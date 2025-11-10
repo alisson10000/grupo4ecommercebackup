@@ -37,8 +37,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String method = request.getMethod();
 
         // 🚫 Ignorar rotas públicas
-        if (path.startsWith("/auth/") ||
+        if (
+            path.startsWith("/auth/") ||
+            path.startsWith("/auth/login") ||
             path.startsWith("/public/") ||
+            path.startsWith("/imagens/") ||      // ✅ adicionada
+            path.startsWith("/uploads/") ||      // ✅ adicionada
             (path.startsWith("/categorias") && method.equalsIgnoreCase("GET")) ||
             (path.startsWith("/produtos") && method.equalsIgnoreCase("GET")) ||
             (path.startsWith("/pedidos") && (
@@ -49,8 +53,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             path.startsWith("/swagger-ui") ||
             path.startsWith("/v3/api-docs") ||
             path.startsWith("/swagger-resources") ||
-            path.startsWith("/webjars") ) {
-            
+            path.startsWith("/webjars")
+        ) {
             chain.doFilter(request, response);
             return;
         }

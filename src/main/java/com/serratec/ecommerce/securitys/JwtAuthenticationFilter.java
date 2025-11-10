@@ -12,39 +12,41 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import java.io.IOException;
+import com.serratec.ecommerce.entitys.Usuario;
+import com.serratec.ecommerce.repositorys.UsuarioRepository;
+
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final UsuarioRepository usuarioRepository;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+
+    // 🔹 Construtor com dois parâmetros (igual ao que o Spring espera)
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UsuarioRepository usuarioRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        setFilterProcessesUrl("/auth/login"); // define o endpoint de autenticação
+        this.usuarioRepository = usuarioRepository;
+        setFilterProcessesUrl("/auth/login");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         try {
-            // 🔹 Lê o corpo JSON e converte para DTO
             ObjectMapper mapper = new ObjectMapper();
             LoginDTO login = mapper.readValue(request.getInputStream(), LoginDTO.class);
 
             System.out.println("Tentando autenticar usuário: " + login.getEmail());
 
-            // 🔹 Cria o token de autenticação (sem authorities, serão resolvidas depois)
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
 
-            // 🔹 Envia para o AuthenticationManager validar (via UserDetailsService)
             return authenticationManager.authenticate(authToken);
-
         } catch (IOException e) {
-            throw new RuntimeException("Erro ao ler credenciais de login: " + e.getMessage(), e);
+            throw new RuntimeException("Erro ao ler credenciais: " + e.getMessage(), e);
         }
     }
 
@@ -53,13 +55,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
 
-        // 🔹 Obtém o username autenticado
         String username = ((UserDetails) authResult.getPrincipal()).getUsername();
-
-        // 🔹 Gera o token JWT
         String token = jwtUtil.generateToken(username);
 
-        // 🔹 Retorna no header e também no corpo JSON
         response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("access-control-expose-headers", "Authorization");
         response.setContentType("application/json");
@@ -67,7 +65,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jsonResponse = String.format("{\"token\":\"%s\",\"type\":\"Bearer\",\"user\":\"%s\"}", token, username);
         response.getWriter().write(jsonResponse);
 
-        System.out.println(" Login bem-sucedido! Token JWT gerado para: " + username);
+        System.out.println("✅ Login bem-sucedido! Token JWT gerado para: " + username);
     }
 
     @Override
@@ -75,11 +73,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                               AuthenticationException failed)
             throws IOException, ServletException {
 
-        // 🔹 Retorno amigável em caso de falha no login
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.getWriter().write("{\"error\":\"Usuário ou senha inválidos\"}");
 
-        System.out.println(" Falha na autenticação: " + failed.getMessage());
+        System.out.println("❌ Falha na autenticação: " + failed.getMessage());
     }
 }
